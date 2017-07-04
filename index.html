@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>立體相冊</title>
+    <script src="jquery-1.11.3.min.js"></script>
+    <style>
+        body {background: #000;height:2000px;}
+        .box {width:980px;height:500px;position: absolute;top:0;bottom: 0;left:0;right:0;margin:auto;transform-style:preserve-3d;perspective: 1500px;transform: rotateX(-30deg)}
+        .item {position: absolute;left:0;top:0;border-radius: 8px;transition: all 1s;transform-origin: center bottom;border:2px solid #fff}
+        button {position: absolute;bottom:-80px;height:50px;width:80px;line-height: 50px;text-align: center}
+        .prev {left:20px;}
+        .next {right:20px;}
+    </style>
+</head>
+<body>
+<ul style="position: fixed;top: 50px;left:50px;list-style: none;text-align: center">
+    <li><a href="index.html" style="display: block;color:#000;width:20px;height:20px;border-radius: 50%;background: #fff;text-decoration: none">1</a></li>
+    <li style="margin:5px 0"><a href="2.html" style="display: block;color:#000;width:20px;height:20px;border-radius: 50%;background: #fff;text-decoration: none">2</a></li>
+    <li><a href="3.html" style="display: block;color:#000;width:20px;height:20px;border-radius: 50%;background: #fff;text-decoration: none">3</a></li>
+</ul>
+<div class="box">
+    <button type="button" class="prev">prev</button>
+    <button type="button" class="next">next</button>
+</div>
+</body>
+</html>
+<script>
+    $(function(){
+        var box=$(".box");
+        var w=box.width();
+        var h=box.height();
+
+        var num=4;
+
+        for(var i=0;i<num;i++){
+            var z=i*(-50);
+            $("<div class='item'></div>")
+                    .width(w)
+                    .height(h)
+                    .css({
+                        "background-image":"url(images/"+i+".jpg)",
+                        "transform":"translateZ("+z+"px)"
+                    })
+                    .appendTo(box)
+        }
+
+        //1 點擊事件-旋轉并隱藏
+        //2 插入到最後,rotateX(0)  translateZ(-num*50)
+
+        var state=true;
+        $(".next").click(function(){
+
+            if(!state)  return false ;
+            state=false;
+
+            var first=$(".item").eq(0);
+            first.css({
+                "transform":"rotateX(180deg)",
+                "opacity":0.1
+            });
+            setTimeout(function(){
+                first.css({
+                    "transform":"rotateX(0deg) translateZ("+num*(-50)+"px)",
+                    "opacity":1
+                })
+            .appendTo(box);
+                setTimeout(set,500);
+ //               state=true
+            },1000)
+        });
+
+
+        $(".prev").click(function(){
+
+            if(!state)  return false ;
+            state=false;
+
+
+            var last=$(".item").eq(3);
+            last.css({
+                "transform":"rotateX(-180deg)",
+                "opacity":0.1
+            });
+            setTimeout(function(){
+                last.css({
+                            "transform":"rotateX(0deg) translateZ("+num*(50)+"px)",
+                            "opacity":1
+                        });
+                box.prepend(last);
+                setTimeout(set,500);
+            },1000);
+        });
+
+
+
+        //重新設置所有item的Z軸偏移
+        function set(){
+            $(".item").each(function(index){
+                var z=index*(-50);
+                $(this).css({
+                    "transform":"translateZ("+z+"px)"
+                })
+            });
+            state=true
+        }
+
+
+    })
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
